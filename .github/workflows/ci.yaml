@@ -16,32 +16,32 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "14.x"
-      # - uses: actions/cache@v3
-      #   id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-      #   with:
-      #     path: ~/.npm
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
-- name: NPM Install
-  run: npm install
-- name: NPM Install Angular
-  run: npm install -g @angular/cli > /dev/null
-- name: Lint
-  run: npm run lint
-- name: Format
-  run: npm run format
-- name: NPM build Angular Production
-  run: npm run build:prod
-# - name: Test
-#   run: npm run test:ci
-# - name: Test coverage
-#   run: npm run test:ci:cov
-- name: Deploy to my EC2 instance
-  uses: easingthemes/ssh-deploy@v2.1.5
-  with:
-    SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY}}
-    SOURCE: "dist/contract/"
-    REMOTE_HOST: "ec2-13-200-54-87.ap-south-1.compute.amazonaws.com"
-    REMOTE_USER: "ec2-user"
+      - uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: NPM Install
+        run: npm install
+      - name: NPM Install Angular
+        run: npm install -g @angular/cli > /dev/null
+      - name: Lint
+        run: npm run lint
+      - name: Format
+        run: npm run format
+      - name: NPM build Angular Production
+        run: npm run build:prod
+      # - name: Test
+      #   run: npm run test:ci
+      # - name: Test coverage
+      #   run: npm run test:ci:cov
+      - name: Deploy to my EC2 instance
+        uses: easingthemes/ssh-deploy@v2.1.5
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY}}
+          SOURCE: "dist/contract/"
+          REMOTE_HOST: "ec2-13-200-54-87.ap-south-1.compute.amazonaws.com"
+          REMOTE_USER: "ec2-user"
     TARGET: "/var/www/contract-app/"
