@@ -30,6 +30,6 @@ jobs:
     - name: Build with Maven
       run: mvn -B clean install package 
     - name: Execute the JAR
-      run: sudo kill -9 `sudo lsof -t -i:8080` & sudo java -jar /u01/app/actions-runner/_work/Contract-Management-API/Contract-Management-API/target/ContractManagement-0.0.1-SNAPSHOT.jar &
+      run: sudo kill -9 `sudo lsof -t -i:9393` & sudo java -jar /u01/app/actions-runner/_work/Contract-Management-API/Contract-Management-API/target/ContractManagement-0.0.1-SNAPSHOT.jar &
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can received
