@@ -4,8 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsWebFilter;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ public class CorsConfig {
      * @return the cors web filter
      */
     @Bean
-    CorsWebFilter corsWebFilter() {
+    CorsFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
         List<String> corsOrgins = new ArrayList<>();
         corsOrgins.add("http://localhost:4200");
@@ -44,6 +44,6 @@ public class CorsConfig {
                 new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);
 
-        return new CorsWebFilter(source);
+        return new CorsFilter(source);
     }
 }
