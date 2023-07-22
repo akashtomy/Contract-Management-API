@@ -1,0 +1,19 @@
+server:
+  port: 9393
+  servlet:
+    context-path: /cms-app
+spring:
+  application:
+    name: CMS-APP
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+      show-sql: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/cms
+    username: 'postgres1'
+    password: 'postgres'
+  main:
+    allow-bean-definition-overriding: true
