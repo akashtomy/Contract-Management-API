@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +25,9 @@ public class Document {
      * The Id.
      */
     @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "document_id", nullable = false)
     private String id;
 
@@ -72,6 +76,7 @@ public class Document {
     /**
      * The Version.
      */
+    @Version
     @Column(name = "version")
     private Integer version;
 

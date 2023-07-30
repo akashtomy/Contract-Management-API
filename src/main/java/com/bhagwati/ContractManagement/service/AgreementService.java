@@ -1,7 +1,6 @@
 package com.bhagwati.ContractManagement.service;
 
 import com.bhagwati.ContractManagement.dto.AgreementDto;
-import com.bhagwati.ContractManagement.entity.Agreement;
 import com.bhagwati.ContractManagement.mapper.AgreementMapper;
 import com.bhagwati.ContractManagement.repository.AgreementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +41,7 @@ public class AgreementService {
      * @return the agreement dto
      */
     public AgreementDto getAgreementDetailsById(String agreementId){
-        Agreement agreement = agreementRepository.findById(agreementId).orElseThrow(() -> new RuntimeException("Data not found"));
-        return agreementMapper.convertEntityToDto(agreement);
+        return agreementMapper.convertEntityToDto(agreementRepository.findById(agreementId).orElseThrow(() -> new RuntimeException("Data not found")));
     }
 
     /**

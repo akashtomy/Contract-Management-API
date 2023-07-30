@@ -1,6 +1,8 @@
 package com.bhagwati.ContractManagement.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
  * @author Akash Thomas.
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class VendorDto extends AuditableDto implements Serializable {
     /**
      * The Id.
@@ -40,5 +44,10 @@ public class VendorDto extends AuditableDto implements Serializable {
      * The Bank.
      */
     private BankDetailDto bank;
+
+    /**
+     * The Agreement.
+     */
+    private AgreementDto agreement;
 
 }

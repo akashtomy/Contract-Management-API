@@ -1,13 +1,24 @@
 package com.bhagwati.ContractManagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * The type Agreement.
@@ -25,6 +36,9 @@ public class Agreement {
      * The Id.
      */
     @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "agreement_id", nullable = false)
     private String id;
 
@@ -73,25 +87,33 @@ public class Agreement {
     /**
      * The Created by.
      */
-    @Column(name = "created_by", nullable = false)
+    @Column(name = "created_by")
     private String createdBy;
 
     /**
      * The Create datetime.
      */
+    @CreatedDate
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "create_datetime", nullable = false)
     private LocalDateTime createDatetime;
 
     /**
      * The Modified datetime.
      */
+    @LastModifiedDate
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "modified_datetime", nullable = false)
     private LocalDateTime modifiedDatetime;
 
     /**
      * The Modified by.
      */
-    @Column(name = "modified_by", nullable = false)
+    @Column(name = "modified_by")
     private String modifiedBy;
 
     /**
@@ -103,9 +125,9 @@ public class Agreement {
     /**
      * The Vendor.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vendor_id")
-    private Vendor vendor;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "agreement")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Vendor> vendor;
 
 
 }

@@ -1,10 +1,13 @@
 package com.bhagwati.ContractManagement.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * A DTO for the {@link com.bhagwati.ContractManagement.entity.Agreement} entity
@@ -12,6 +15,8 @@ import java.time.LocalDateTime;
  * @author Akash Thomas.
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AgreementDto extends AuditableDto implements Serializable {
     /**
      * The Id.
@@ -45,9 +50,9 @@ public class AgreementDto extends AuditableDto implements Serializable {
      * The End date.
      */
     private LocalDateTime endDate;
- 
+
     /**
      * The Vendor.
      */
-    private VendorDto vendor;
+    private List<VendorDto> vendors;
 }
