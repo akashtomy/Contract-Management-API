@@ -32,6 +32,11 @@ public class VendorDto extends AuditableDto implements Serializable {
      * The Aadhar.
      */
     private String aadhar;
+
+    /**
+     * The Address.
+     */
+    private String address;
     /**
      * The Phone.
      */
