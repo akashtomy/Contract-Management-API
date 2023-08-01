@@ -127,7 +127,7 @@ public class Agreement {
      * The Vendor.
      */
     @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL, mappedBy = "agreementId")
+            cascade = CascadeType.ALL, mappedBy = "agreement")
     @Fetch(FetchMode.SUBSELECT)
     private List<AgreementVendorMapping> vendorMappings = new ArrayList<>();
 
