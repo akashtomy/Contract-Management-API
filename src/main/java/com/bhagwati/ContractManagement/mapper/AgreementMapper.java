@@ -1,9 +1,12 @@
 package com.bhagwati.ContractManagement.mapper;
 
 import com.bhagwati.ContractManagement.dto.AgreementDto;
+import com.bhagwati.ContractManagement.dto.VendorMappingDto;
 import com.bhagwati.ContractManagement.entity.Agreement;
+import com.bhagwati.ContractManagement.entity.AgreementVendorMapping;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
@@ -49,5 +52,10 @@ public interface AgreementMapper {
     @InheritConfiguration(name = "convertEntityListToDtoList")
     List<Agreement> convertDtoListToEntityList(List<AgreementDto> dtos);
 
+    @InheritConfiguration(name = "convertMappingEntityToDto")
+    List<VendorMappingDto> convertMappingEntityListToDtoList(List<AgreementVendorMapping> entity);
+
+    @Mapping(target = "agreement", ignore = true)
+    VendorMappingDto convertMappingEntityToDto(AgreementVendorMapping entity);
 
 }
