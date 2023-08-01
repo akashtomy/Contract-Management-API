@@ -18,6 +18,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -97,7 +98,7 @@ public class Agreement {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @Column(name = "create_datetime", nullable = false)
+    @Column(name = "create_datetime")
     private LocalDateTime createDatetime;
 
     /**
@@ -107,7 +108,7 @@ public class Agreement {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @Column(name = "modified_datetime", nullable = false)
+    @Column(name = "modified_datetime")
     private LocalDateTime modifiedDatetime;
 
     /**
@@ -125,9 +126,10 @@ public class Agreement {
     /**
      * The Vendor.
      */
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "agreement")
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL, mappedBy = "agreementId")
     @Fetch(FetchMode.SUBSELECT)
-    private List<Vendor> vendor;
+    private List<AgreementVendorMapping> vendorMappings = new ArrayList<>();
 
 
 }

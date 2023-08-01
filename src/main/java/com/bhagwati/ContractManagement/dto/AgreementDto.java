@@ -55,4 +55,9 @@ public class AgreementDto extends AuditableDto implements Serializable {
      * The Vendor.
      */
     private List<VendorDto> vendors;
+
+    /**
+     * The Vendor ids.
+     */
+    private List<String> vendorIds;
 }

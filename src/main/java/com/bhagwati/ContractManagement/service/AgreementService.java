@@ -1,12 +1,24 @@
 package com.bhagwati.ContractManagement.service;
 
 import com.bhagwati.ContractManagement.dto.AgreementDto;
+import com.bhagwati.ContractManagement.dto.PageableRequestDto;
+import com.bhagwati.ContractManagement.dto.PageableResponse;
+import com.bhagwati.ContractManagement.entity.Agreement;
+import com.bhagwati.ContractManagement.entity.AgreementVendorMapping;
+import com.bhagwati.ContractManagement.entity.Vendor;
 import com.bhagwati.ContractManagement.mapper.AgreementMapper;
 import com.bhagwati.ContractManagement.repository.AgreementRepository;
+import com.bhagwati.ContractManagement.repository.VendorsRepository;
+import com.bhagwati.ContractManagement.utils.CommonUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The type Agreement service.
@@ -25,12 +37,19 @@ public class AgreementService {
     @Autowired
     private AgreementMapper agreementMapper;
 
+
+    @Autowired
+    private CommonUtils commonUtils;
+
+    @Autowired
+    private VendorsRepository vendorsRepository;
+
     /**
      * Get agreement details list.
      *
      * @return the list
      */
-    public List<AgreementDto> getAgreementDetails(){
+    public List<AgreementDto> getAgreementDetails() {
         return agreementMapper.convertEntityListToDtoList(agreementRepository.findAll());
     }
 
@@ -40,7 +59,7 @@ public class AgreementService {
      * @param agreementId the agreement id
      * @return the agreement dto
      */
-    public AgreementDto getAgreementDetailsById(String agreementId){
+    public AgreementDto getAgreementDetailsById(String agreementId) {
         return agreementMapper.convertEntityToDto(agreementRepository.findById(agreementId).orElseThrow(() -> new RuntimeException("Data not found")));
     }
 
@@ -50,8 +69,21 @@ public class AgreementService {
      * @param agreementDto the agreement dto
      * @return the agreement dto
      */
-    public AgreementDto saveAgreementDetails(AgreementDto agreementDto){
-        return agreementMapper.convertEntityToDto(agreementRepository.save(agreementMapper.convertDtoToEntity(agreementDto)));
+    @Transactional
+    public AgreementDto saveAgreementDetails(AgreementDto agreementDto) {
+        List<String> vendorIds = agreementDto.getVendors().stream().map(vendorDto -> vendorDto.getId()).collect(Collectors.toList());
+        Agreement agreement = agreementMapper.convertDtoToEntity(agreementDto);
+        List<Vendor> vendors = vendorsRepository.findByIdIn(vendorIds);
+        List<AgreementVendorMapping> agreementVendorMappings = new ArrayList<>();
+        for (Vendor vendor : vendors) {
+            AgreementVendorMapping agreementVendorMapping = new AgreementVendorMapping();
+            agreementVendorMapping.setAgreement(agreement);
+            agreementVendorMapping.setVendor(vendor);
+            agreementVendorMappings.add(agreementVendorMapping);
+        }
+        agreement.setVendorMappings(agreementVendorMappings);
+        Agreement savedAgreement = agreementRepository.save(agreement);
+        return agreementMapper.convertEntityToDto(savedAgreement);
     }
 
     /**
@@ -60,7 +92,7 @@ public class AgreementService {
      * @param agreementDto the agreement dto
      * @return the agreement dto
      */
-    public AgreementDto updateAgreementDetails(AgreementDto agreementDto){
+    public AgreementDto updateAgreementDetails(AgreementDto agreementDto) {
         return agreementMapper.convertEntityToDto(agreementRepository.save(agreementMapper.convertDtoToEntity(agreementDto)));
     }
 
@@ -70,8 +102,8 @@ public class AgreementService {
      * @param agreementId the agreement id
      * @return the boolean
      */
-    public boolean deleteAgreementDetails(String agreementId){
-        if(agreementRepository.existsById(agreementId)) {
+    public boolean deleteAgreementDetails(String agreementId) {
+        if (agreementRepository.existsById(agreementId)) {
             agreementRepository.deleteById(agreementId);
             return true;
         }
@@ -84,7 +116,13 @@ public class AgreementService {
      *
      * @return the list
      */
-    public List<AgreementDto> searchAgreementDetails(){
-        return agreementMapper.convertEntityListToDtoList(agreementRepository.findAll());
+    public PageableResponse<AgreementDto> searchAgreementDetails(PageableRequestDto pageableRequestDto) {
+        Pageable pageable = PageRequest.of(ObjectUtils.defaultIfNull(pageableRequestDto.getPageNo(), 1) - 1,
+                ObjectUtils.defaultIfNull(pageableRequestDto.getPageSize(), 5),
+                Sort.by(commonUtils.getPaginationOrders(pageableRequestDto.getSortBy())));
+        Page<Agreement> pages = agreementRepository.findAll(pageable);
+        List<AgreementDto> agreementDtos = agreementMapper.convertEntityListToDtoList(pages.getContent());
+        PageableResponse<AgreementDto> pageableResponse = new PageableResponse<>();
+        return pageableResponse.convert(new PageImpl<>(agreementDtos, pageable, pages.getTotalElements()));
     }
 }

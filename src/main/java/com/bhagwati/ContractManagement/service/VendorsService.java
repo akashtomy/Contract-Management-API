@@ -1,10 +1,15 @@
 package com.bhagwati.ContractManagement.service;
 
+import com.bhagwati.ContractManagement.dto.PageableRequestDto;
+import com.bhagwati.ContractManagement.dto.PageableResponse;
 import com.bhagwati.ContractManagement.dto.VendorDto;
 import com.bhagwati.ContractManagement.entity.Vendor;
 import com.bhagwati.ContractManagement.mapper.VendorMapper;
 import com.bhagwati.ContractManagement.repository.VendorsRepository;
+import com.bhagwati.ContractManagement.utils.CommonUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +33,9 @@ public class VendorsService {
      */
     @Autowired
     private VendorMapper vendorMapper;
+
+    @Autowired
+    private CommonUtils commonUtils;
 
     /**
      * Gets agreement details.
@@ -89,7 +97,14 @@ public class VendorsService {
      *
      * @return the list
      */
-    public List<VendorDto> searchAgreementDetails() {
-        return vendorMapper.convertEntityListToDtoList(vendorsRepository.findAll());
+    public PageableResponse<VendorDto> searchVendors(PageableRequestDto pageableRequestDto) {
+        Pageable pageable = PageRequest.of(ObjectUtils.defaultIfNull(pageableRequestDto.getPageNo(), 1) - 1,
+                ObjectUtils.defaultIfNull(pageableRequestDto.getPageSize(), 5),
+                Sort.by(commonUtils.getPaginationOrders(pageableRequestDto.getSortBy())));
+        PageableResponse<VendorDto> pageableResponse = new PageableResponse<>();
+//        genericSpecification = new GenericSpecification<>(pageableRequestDto.getFilter()).build(pageableRequestDto.getSearchKey());
+        Page<Vendor> vendorPages = vendorsRepository.findAll(pageable);
+        List<VendorDto> vendorDtos = vendorMapper.convertEntityListToDtoList(vendorPages.getContent());
+        return pageableResponse.convert(new PageImpl<>(vendorDtos, pageable, vendorPages.getTotalElements()));
     }
 }
