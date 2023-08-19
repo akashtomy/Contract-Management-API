@@ -93,7 +93,19 @@ public class AgreementService {
      * @return the agreement dto
      */
     public AgreementDto updateAgreementDetails(AgreementDto agreementDto) {
-        return agreementMapper.convertEntityToDto(agreementRepository.save(agreementMapper.convertDtoToEntity(agreementDto)));
+        List<String> vendorIds = agreementDto.getVendors().stream().map(vendorDto -> vendorDto.getId()).collect(Collectors.toList());
+        Agreement agreement = agreementMapper.convertDtoToEntity(agreementDto);
+        List<Vendor> vendors = vendorsRepository.findByIdIn(vendorIds);
+        List<AgreementVendorMapping> agreementVendorMappings = new ArrayList<>();
+        for (Vendor vendor : vendors) {
+            AgreementVendorMapping agreementVendorMapping = new AgreementVendorMapping();
+            agreementVendorMapping.setAgreement(agreement);
+            agreementVendorMapping.setVendor(vendor);
+            agreementVendorMappings.add(agreementVendorMapping);
+        }
+        agreement.setVendorMappings(agreementVendorMappings);
+        Agreement savedAgreement = agreementRepository.save(agreement);
+        return agreementMapper.convertEntityToDto(savedAgreement);
     }
 
     /**
