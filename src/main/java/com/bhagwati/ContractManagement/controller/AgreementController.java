@@ -5,6 +5,7 @@ import com.bhagwati.ContractManagement.constant.MessageConstant;
 import com.bhagwati.ContractManagement.dto.AgreementDto;
 import com.bhagwati.ContractManagement.dto.PageableRequestDto;
 import com.bhagwati.ContractManagement.dto.ResponseDto;
+import com.bhagwati.ContractManagement.dto.SearchFilterPageRequest;
 import com.bhagwati.ContractManagement.service.AgreementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +57,11 @@ public class AgreementController {
         return ResponseDto.builder().statusCode(200).data(agreementService.searchAgreementDetails(pageableRequestDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
+    @PostMapping(APIConstant.SEARCH+"/filter")
+    public ResponseDto searchAgreement(@RequestBody SearchFilterPageRequest pageableRequestDto) {
+        return ResponseDto.builder().statusCode(200).data(agreementService.searchAgreementDetails(pageableRequestDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+    }
+
     /**
      * Save agreement string.
      *
@@ -87,6 +93,17 @@ public class AgreementController {
     @DeleteMapping(APIConstant.ID)
     public ResponseDto deleteAgreement(@PathVariable String id) {
         return ResponseDto.builder().data(agreementService.deleteAgreementDetails(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+    }
+
+    /**
+     * Gets vendors by agreement id.
+     *
+     * @param agreementId the agreement id
+     * @return the vendors by agreement id
+     */
+    @GetMapping(APIConstant.VENDOR_AGREEMENT_ID)
+    public ResponseDto getVendorsByAgreementId(@PathVariable String agreementId) {
+        return ResponseDto.builder().statusCode(200).data(agreementService.getVendorsByAgreementId(agreementId)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 }
 

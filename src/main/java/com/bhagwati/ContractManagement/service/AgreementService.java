@@ -1,8 +1,6 @@
 package com.bhagwati.ContractManagement.service;
 
-import com.bhagwati.ContractManagement.dto.AgreementDto;
-import com.bhagwati.ContractManagement.dto.PageableRequestDto;
-import com.bhagwati.ContractManagement.dto.PageableResponse;
+import com.bhagwati.ContractManagement.dto.*;
 import com.bhagwati.ContractManagement.entity.Agreement;
 import com.bhagwati.ContractManagement.entity.AgreementVendorMapping;
 import com.bhagwati.ContractManagement.entity.Vendor;
@@ -15,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +27,9 @@ import java.util.stream.Collectors;
 @Service
 public class AgreementService {
 
+    /**
+     * The Agreement repository.
+     */
     @Autowired
     private AgreementRepository agreementRepository;
 
@@ -37,12 +39,20 @@ public class AgreementService {
     @Autowired
     private AgreementMapper agreementMapper;
 
-
+    /**
+     * The Common utils.
+     */
     @Autowired
     private CommonUtils commonUtils;
 
+    /**
+     * The Vendors repository.
+     */
     @Autowired
     private VendorsRepository vendorsRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     /**
      * Get agreement details list.
@@ -64,6 +74,19 @@ public class AgreementService {
     }
 
     /**
+     * Gets vendors by agreement id.
+     *
+     * @param agreementId the agreement id
+     * @return the vendors by agreement id
+     */
+    public List<VendorMappingDto> getVendorsByAgreementId(String agreementId) {
+        Agreement agreement = agreementRepository.findById(agreementId).orElseThrow(() -> new RuntimeException("Data not found"));
+        AgreementDto agreementDto = agreementMapper.convertEntityToDto(agreement);
+        return agreementDto.getVendorMappings();
+    }
+
+
+    /**
      * Save agreement details agreement dto.
      *
      * @param agreementDto the agreement dto
@@ -71,9 +94,9 @@ public class AgreementService {
      */
     @Transactional
     public AgreementDto saveAgreementDetails(AgreementDto agreementDto) {
-        List<String> vendorIds = agreementDto.getVendors().stream().map(vendorDto -> vendorDto.getId()).collect(Collectors.toList());
+        List<String> vendorIds = agreementDto.getVendors().stream().map(vendorDto -> vendorDto.getVendorId()).collect(Collectors.toList());
         Agreement agreement = agreementMapper.convertDtoToEntity(agreementDto);
-        List<Vendor> vendors = vendorsRepository.findByIdIn(vendorIds);
+        List<Vendor> vendors = vendorsRepository.findByVendorIdIn(vendorIds);
         List<AgreementVendorMapping> agreementVendorMappings = new ArrayList<>();
         for (Vendor vendor : vendors) {
             AgreementVendorMapping agreementVendorMapping = new AgreementVendorMapping();
@@ -93,9 +116,9 @@ public class AgreementService {
      * @return the agreement dto
      */
     public AgreementDto updateAgreementDetails(AgreementDto agreementDto) {
-        List<String> vendorIds = agreementDto.getVendors().stream().map(vendorDto -> vendorDto.getId()).collect(Collectors.toList());
+        List<String> vendorIds = agreementDto.getVendors().stream().map(vendorDto -> vendorDto.getVendorId()).collect(Collectors.toList());
         Agreement agreement = agreementMapper.convertDtoToEntity(agreementDto);
-        List<Vendor> vendors = vendorsRepository.findByIdIn(vendorIds);
+        List<Vendor> vendors = vendorsRepository.findByVendorIdIn(vendorIds);
         List<AgreementVendorMapping> agreementVendorMappings = new ArrayList<>();
         for (Vendor vendor : vendors) {
             AgreementVendorMapping agreementVendorMapping = new AgreementVendorMapping();
@@ -126,15 +149,38 @@ public class AgreementService {
     /**
      * Search agreement details list.
      *
+     * @param pageableRequestDto the pageable request dto
      * @return the list
      */
     public PageableResponse<AgreementDto> searchAgreementDetails(PageableRequestDto pageableRequestDto) {
         Pageable pageable = PageRequest.of(ObjectUtils.defaultIfNull(pageableRequestDto.getPageNo(), 1) - 1,
                 ObjectUtils.defaultIfNull(pageableRequestDto.getPageSize(), 5),
                 Sort.by(commonUtils.getPaginationOrders(pageableRequestDto.getSortBy())));
-        Page<Agreement> pages = agreementRepository.findAll(pageable);
+        Page<Agreement> pages = agreementRepository.search(pageableRequestDto.getSearchKey(), pageable);
         List<AgreementDto> agreementDtos = agreementMapper.convertEntityListToDtoList(pages.getContent());
         PageableResponse<AgreementDto> pageableResponse = new PageableResponse<>();
         return pageableResponse.convert(new PageImpl<>(agreementDtos, pageable, pages.getTotalElements()));
+    }/**
+     * Search agreement details list.
+     *
+     * @return the list
+     */
+    public PageableResponse<AgreementDto> searchAgreementDetails(SearchFilterPageRequest searchFilterPageRequest) {
+       List<Filter> filterList = searchFilterPageRequest.getFilters().stream().filter(f -> f.getField().contains("vendor")).collect(Collectors.toList());
+        if (filterList.isEmpty()) {
+            return SearchFilter.getFilteredResults(searchFilterPageRequest, Agreement.class, agreementRepository,
+                    agreements -> agreementMapper.convertEntityListToDtoList(agreements));
+        }
+        Page<Agreement> agreementPage = SearchFilter.getFilteredViewPage(searchFilterPageRequest, entityManager, Agreement.class, AgreementVendorMapping.class,
+                AgreementVendorMapping::getSelections,
+                root -> root.get("vendor"));
+//        SearchFilter.getFilteredResults(searchFilterPageRequest, RoleGroup.class, roleGroupRepository,
+//                rolesList -> roleGroupMapper.convertRoleEntityListToDtoListCustom(rolesList, new ArrayList<>()))
+        PageableResponse<AgreementDto> pageableResponse = new PageableResponse<>();
+        pageableResponse.setTotalRecords(agreementPage.getTotalElements());
+        pageableResponse.setCurrentPage(agreementPage.getNumber());
+        pageableResponse.setTotalPages(agreementPage.getTotalPages());
+        pageableResponse.setData(agreementMapper.convertEntityListToDtoList(agreementPage.getContent()));
+        return pageableResponse;
     }
 }

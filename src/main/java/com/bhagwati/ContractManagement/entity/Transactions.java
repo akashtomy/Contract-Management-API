@@ -9,91 +9,95 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
- * The type Vendor.
+ * The type Transactions.
  *
  * @author Akash Thomas.
  */
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity
-@Table(name = "vendors")
-@DynamicUpdate
+@Table(name = "transactions")
 @EntityListeners(AuditingEntityListener.class)
-public class Vendor {
+public class Transactions  {
     /**
-     * The Id.
+     * The Transaction id.
      */
-    @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "vendor_id", nullable = false)
-    private String vendorId;
+    @Id
+    @Column(name = "transaction_id", nullable = false)
+    private String transactionId;
 
     /**
-     * The Name.
+     * The Agreement id.
      */
-    @Column(name = "name", nullable = false)
-    private String vendorName;
+    @Column(name = "agreement_vendor_id")
+    private String agreementVendorId;
+
 
     /**
-     * The Pan.
+     * The Amount.
      */
-    @Column(name = "pan", nullable = false)
-    private String pan;
+    @Column(name = "amount")
+    private Integer amount;
 
     /**
-     * The Aadhar.
+     * The Type.
      */
-    @Column(name = "aadhar")
-    private String aadhar;
+    @Column(name = "type")
+    private String type;
 
     /**
-     * The Address.
+     * The File id.
      */
-    @Column(name = "address")
-    private String address;
-    /**
-     * The Phone.
-     */
-    @Column(name = "phone")
-    private String phone;
+    @Column(name = "file_id")
+    private String fileId;
 
     /**
-     * The Email.
+     * The Bill date.
      */
-    @Column(name = "email")
-    private String email;
+    @Column(name = "bill_date")
+    private LocalDateTime billDate;
 
     /**
-     * The Bank.
+     * The Bill number.
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "bank_id")
-    private BankDetail bank;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "agreement_id")
-    private Agreement agreement;
+    @Column(name = "bill_number")
+    private String billNumber;
 
     /**
-     * The Created by.
+     * The Bill amount.
      */
+    @Column(name = "bill_amount")
+    private Integer billAmount;
+
+    /**
+     * The Gross amount.
+     */
+    @Column(name = "gross_amount")
+    private Integer grossAmount;
+
+    /**
+     * The Net amount.
+     */
+    @Column(name = "net_amount")
+    private Integer netAmount;
+
     @Column(name = "created_by")
     private String createdBy;
-
     /**
      * The Create datetime.
      */
@@ -101,7 +105,7 @@ public class Vendor {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @Column(name = "create_datetime", nullable = false)
+    @Column(name = "create_datetime")
     private LocalDateTime createDatetime;
 
     /**
@@ -111,7 +115,7 @@ public class Vendor {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @Column(name = "modified_datetime", nullable = false)
+    @Column(name = "modified_datetime")
     private LocalDateTime modifiedDatetime;
 
     /**
@@ -123,8 +127,8 @@ public class Vendor {
     /**
      * The Version.
      */
-    @Version
     @Column(name = "version")
+    @Version
     private Integer version;
 
 }

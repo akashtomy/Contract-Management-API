@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * A DTO for the {@link com.bhagwati.ContractManagement.entity.Vendor} entity
@@ -19,11 +18,11 @@ public class VendorDto extends AuditableDto implements Serializable {
     /**
      * The Id.
      */
-    private String id;
+    private String vendorId;
     /**
      * The Name.
      */
-    private String name;
+    private String vendorName;
     /**
      * The Pan.
      */

@@ -7,6 +7,10 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The type Agreement vendor mapping.
@@ -44,5 +48,19 @@ public class AgreementVendorMapping {
     @JoinColumn(name = "vendor_id")
     private Vendor vendor;
 
-
+    public static List<Selection<?>> getSelections(Root<AgreementVendorMapping> from) {
+        List<Selection<?>> paths = new ArrayList<>();
+        paths.add(from.get("vendor"));
+        paths.add(from.get("vendor").get("name"));
+        paths.add(from.get("vendor").get("email"));
+        paths.add(from.get("vendor").get("status"));
+        paths.add(from.get("agreement").get("name"));
+        paths.add(from.get("agreement").get("location"));
+        paths.add(from.get("agreement").get("status"));
+        paths.add(from.get("agreement").get("loaDate"));
+        paths.add(from.get("agreement").get("endDate"));
+        paths.add(from.get("agreement").get("createDatetime"));
+        paths.add(from.get("agreement").get("modifiedDatetime"));
+        return paths;
+    }
 }

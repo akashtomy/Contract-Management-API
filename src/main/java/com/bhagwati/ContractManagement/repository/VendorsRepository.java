@@ -12,5 +12,5 @@ import java.util.List;
  * @author Akash Thomas.
  */
 public interface VendorsRepository extends JpaRepository<Vendor, String>, JpaSpecificationExecutor<Vendor> {
-    List<Vendor> findByIdIn(List<String> vendorIds);
+    List<Vendor> findByVendorIdIn(List<String> vendorIds);
 }
