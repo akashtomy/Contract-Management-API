@@ -31,7 +31,7 @@ public class TransactionController {
      */
     @GetMapping
     public ResponseDto getTransactions() {
-        return ResponseDto.builder().statusCode(200).data(transactionService.getVendorDetails()).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().success(true).statusCode(200).data(transactionService.getVendorDetails()).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -42,7 +42,18 @@ public class TransactionController {
      */
     @GetMapping(APIConstant.ID)
     public ResponseDto getTransactionById(@PathVariable String id) {
-        return ResponseDto.builder().statusCode(200).data(transactionService.getVendorById(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().success(true).statusCode(200).data(transactionService.getVendorById(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+    }
+
+
+    @GetMapping("/agreement/{agreementId}")
+    public ResponseDto getTransactionByAgreementId(@PathVariable String agreementId) {
+        return ResponseDto.builder().success(true).statusCode(200).data(transactionService.getTransactionByAgreementId(agreementId)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+    }
+
+    @GetMapping("/vendor/{vendorId}")
+    public ResponseDto getTransactionByVendorId(@PathVariable String vendorId) {
+        return ResponseDto.builder().success(true).statusCode(200).data(transactionService.getTransactionByVendorId(vendorId)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -53,7 +64,7 @@ public class TransactionController {
      */
     @GetMapping(APIConstant.SEARCH)
     public ResponseDto searchTransaction(PageableRequestDto pageableRequestDto) {
-        return ResponseDto.builder().statusCode(200).data(transactionService.searchVendors(pageableRequestDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().success(true).statusCode(200).data(transactionService.searchVendors(pageableRequestDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -64,7 +75,7 @@ public class TransactionController {
      */
     @PostMapping
     public ResponseDto saveTransaction(@RequestBody TransactionDto transactionDto) {
-        return ResponseDto.builder().statusCode(200).data(transactionService.saveVendor(transactionDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().success(true).statusCode(200).data(transactionService.saveVendor(transactionDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -75,7 +86,7 @@ public class TransactionController {
      */
     @PutMapping
     public ResponseDto updateTransaction(@RequestBody TransactionDto transactionDto) {
-        return ResponseDto.builder().statusCode(200).data(transactionService.updateVendor(transactionDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().success(true).statusCode(200).data(transactionService.updateVendor(transactionDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -86,7 +97,7 @@ public class TransactionController {
      */
     @DeleteMapping(APIConstant.ID)
     public ResponseDto deleteTransaction(@PathVariable String id) {
-        return ResponseDto.builder().statusCode(200).data(transactionService.deleteVendor(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().success(true).statusCode(200).data(transactionService.deleteVendor(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 }
 

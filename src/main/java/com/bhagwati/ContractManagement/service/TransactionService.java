@@ -34,6 +34,9 @@ public class TransactionService {
     @Autowired
     private TransactionMapper transactionMapper;
 
+    /**
+     * The Common utils.
+     */
     @Autowired
     private CommonUtils commonUtils;
 
@@ -95,6 +98,7 @@ public class TransactionService {
     /**
      * Search agreement details list.
      *
+     * @param pageableRequestDto the pageable request dto
      * @return the list
      */
     public PageableResponse<TransactionDto> searchVendors(PageableRequestDto pageableRequestDto) {
@@ -106,5 +110,27 @@ public class TransactionService {
         Page<Transactions> transactionsPages = transactionsRepository.findAll(pageable);
         List<TransactionDto> transactionDtos = transactionMapper.convertEntityListToDtoList(transactionsPages.getContent());
         return pageableResponse.convert(new PageImpl<>(transactionDtos, pageable, transactionsPages.getTotalElements()));
+    }
+
+    /**
+     * Gets transaction by agreement id.
+     *
+     * @param agreementId the agreement id
+     * @return the transaction by agreement id
+     */
+    public Object getTransactionByAgreementId(String agreementId) {
+        List<Transactions> transactions = transactionsRepository.findByAgreementId(agreementId);
+        return transactionMapper.convertEntityListToDtoList(transactions);
+    }
+
+    /**
+     * Gets transaction by vendor id.
+     *
+     * @param vendorId the vendor id
+     * @return the transaction by vendor id
+     */
+    public Object getTransactionByVendorId(String vendorId) {
+        List<Transactions> transactions = transactionsRepository.findByAgreementId(vendorId);
+        return transactionMapper.convertEntityListToDtoList(transactions);
     }
 }
