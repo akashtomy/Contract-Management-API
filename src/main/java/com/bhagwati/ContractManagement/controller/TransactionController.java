@@ -46,12 +46,12 @@ public class TransactionController {
     }
 
 
-    @GetMapping("/agreement/{agreementId}")
+    @GetMapping(APIConstant.AGREEMENT_AGREEMENT_ID)
     public ResponseDto getTransactionByAgreementId(@PathVariable String agreementId) {
         return ResponseDto.builder().success(true).statusCode(200).data(transactionService.getTransactionByAgreementId(agreementId)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
-    @GetMapping("/vendor/{vendorId}")
+    @GetMapping(APIConstant.VENDOR_VENDOR_ID)
     public ResponseDto getTransactionByVendorId(@PathVariable String vendorId) {
         return ResponseDto.builder().success(true).statusCode(200).data(transactionService.getTransactionByVendorId(vendorId)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
@@ -64,7 +64,7 @@ public class TransactionController {
      */
     @GetMapping(APIConstant.SEARCH)
     public ResponseDto searchTransaction(PageableRequestDto pageableRequestDto) {
-        return ResponseDto.builder().success(true).statusCode(200).data(transactionService.searchVendors(pageableRequestDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().success(true).statusCode(200).data(transactionService.searchTransactions(pageableRequestDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**

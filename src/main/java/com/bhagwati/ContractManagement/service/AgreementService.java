@@ -4,13 +4,16 @@ import com.bhagwati.ContractManagement.dto.*;
 import com.bhagwati.ContractManagement.entity.Agreement;
 import com.bhagwati.ContractManagement.entity.AgreementVendorMapping;
 import com.bhagwati.ContractManagement.entity.Vendor;
+import com.bhagwati.ContractManagement.exception.CustomExceptions;
 import com.bhagwati.ContractManagement.mapper.AgreementMapper;
 import com.bhagwati.ContractManagement.repository.AgreementRepository;
 import com.bhagwati.ContractManagement.repository.VendorsRepository;
 import com.bhagwati.ContractManagement.utils.CommonUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -117,14 +120,18 @@ public class AgreementService {
      */
     public AgreementDto updateAgreementDetails(AgreementDto agreementDto) {
         List<String> vendorIds = agreementDto.getVendors().stream().map(vendorDto -> vendorDto.getVendorId()).collect(Collectors.toList());
+        Agreement agreementOptional = agreementRepository.findById(agreementDto.getId()).orElseThrow(() -> new CustomExceptions("Data not found", 400, HttpStatus.BAD_REQUEST.toString()));
+        List<AgreementVendorMapping> vendorMappings = agreementOptional.getVendorMappings().stream().filter(avm -> vendorIds.contains(avm.getVendor().getVendorId())).collect(Collectors.toList());
         Agreement agreement = agreementMapper.convertDtoToEntity(agreementDto);
         List<Vendor> vendors = vendorsRepository.findByVendorIdIn(vendorIds);
-        List<AgreementVendorMapping> agreementVendorMappings = new ArrayList<>();
+        List<AgreementVendorMapping> agreementVendorMappings = vendorMappings;
         for (Vendor vendor : vendors) {
-            AgreementVendorMapping agreementVendorMapping = new AgreementVendorMapping();
-            agreementVendorMapping.setAgreement(agreement);
-            agreementVendorMapping.setVendor(vendor);
-            agreementVendorMappings.add(agreementVendorMapping);
+            if (!agreementVendorMappings.stream().anyMatch(avm -> avm.getVendor().getVendorId().equalsIgnoreCase(vendor.getVendorId()))) {
+                AgreementVendorMapping agreementVendorMapping = new AgreementVendorMapping();
+                agreementVendorMapping.setAgreement(agreement);
+                agreementVendorMapping.setVendor(vendor);
+                agreementVendorMappings.add(agreementVendorMapping);
+            }
         }
         agreement.setVendorMappings(agreementVendorMappings);
         Agreement savedAgreement = agreementRepository.save(agreement);
@@ -156,17 +163,24 @@ public class AgreementService {
         Pageable pageable = PageRequest.of(ObjectUtils.defaultIfNull(pageableRequestDto.getPageNo(), 1) - 1,
                 ObjectUtils.defaultIfNull(pageableRequestDto.getPageSize(), 5),
                 Sort.by(commonUtils.getPaginationOrders(pageableRequestDto.getSortBy())));
-        Page<Agreement> pages = agreementRepository.search(pageableRequestDto.getSearchKey(), pageable);
+        Page<Agreement> pages;
+        if (StringUtils.isEmpty(pageableRequestDto.getSearchKey())) {
+            pages = agreementRepository.findAll(pageable);
+        } else {
+            pages = agreementRepository.search(pageableRequestDto.getSearchKey(), pageable);
+        }
         List<AgreementDto> agreementDtos = agreementMapper.convertEntityListToDtoList(pages.getContent());
         PageableResponse<AgreementDto> pageableResponse = new PageableResponse<>();
         return pageableResponse.convert(new PageImpl<>(agreementDtos, pageable, pages.getTotalElements()));
-    }/**
+    }
+
+    /**
      * Search agreement details list.
      *
      * @return the list
      */
     public PageableResponse<AgreementDto> searchAgreementDetails(SearchFilterPageRequest searchFilterPageRequest) {
-       List<Filter> filterList = searchFilterPageRequest.getFilters().stream().filter(f -> f.getField().contains("vendor")).collect(Collectors.toList());
+        List<Filter> filterList = searchFilterPageRequest.getFilters().stream().filter(f -> f.getField().contains("vendor")).collect(Collectors.toList());
         if (filterList.isEmpty()) {
             return SearchFilter.getFilteredResults(searchFilterPageRequest, Agreement.class, agreementRepository,
                     agreements -> agreementMapper.convertEntityListToDtoList(agreements));

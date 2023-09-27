@@ -17,6 +17,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AgreementRepository extends JpaRepository<Agreement, String>, JpaSpecificationExecutor<Agreement> {
 
+    /**
+     * Search page.
+     *
+     * @param keyword  the keyword
+     * @param pageable the pageable
+     * @return the page
+     */
     @Query("select agreement from Agreement agreement"
             + " inner join agreement.vendorMappings vm on vm.agreement.id = agreement.id"
             + " inner join vm.vendor vendor on vm.vendor.vendorId = vendor.vendorId"

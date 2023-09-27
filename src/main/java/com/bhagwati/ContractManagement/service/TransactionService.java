@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * The type Vendors service.
@@ -101,7 +104,7 @@ public class TransactionService {
      * @param pageableRequestDto the pageable request dto
      * @return the list
      */
-    public PageableResponse<TransactionDto> searchVendors(PageableRequestDto pageableRequestDto) {
+    public PageableResponse<TransactionDto> searchTransactions(PageableRequestDto pageableRequestDto) {
         Pageable pageable = PageRequest.of(ObjectUtils.defaultIfNull(pageableRequestDto.getPageNo(), 1) - 1,
                 ObjectUtils.defaultIfNull(pageableRequestDto.getPageSize(), 5),
                 Sort.by(commonUtils.getPaginationOrders(pageableRequestDto.getSortBy())));
@@ -119,8 +122,19 @@ public class TransactionService {
      * @return the transaction by agreement id
      */
     public Object getTransactionByAgreementId(String agreementId) {
+        Map<String, Object> transactionResponse = new HashMap<>();
         List<Transactions> transactions = transactionsRepository.findByAgreementId(agreementId);
-        return transactionMapper.convertEntityListToDtoList(transactions);
+        List<TransactionDto> transactionDtos = transactionMapper.convertEntityListToDtoList(transactions);
+        Map<String, List<TransactionDto>> transactionTypeMap = transactionDtos.stream().collect(Collectors.groupingBy(TransactionDto::getType));
+        transactionTypeMap.forEach((s, transactionDtos1) -> {
+            if (s.equalsIgnoreCase("CREDIT")) {
+                transactionResponse.put("totalReceivedAmount", transactionDtos1.stream().mapToInt(TransactionDto::getAmount).sum());
+            } else {
+                transactionResponse.put("totalSpendAmount", transactionDtos1.stream().mapToInt(TransactionDto::getAmount).sum());
+            }
+        });
+        transactionResponse.put("data", transactionResponse);
+        return transactionResponse;
     }
 
     /**
