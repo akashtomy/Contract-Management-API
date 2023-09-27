@@ -19,12 +19,14 @@ public interface VendorsRepository extends JpaRepository<Vendor, String>, JpaSpe
     List<Vendor> findByVendorIdIn(List<String> vendorIds);
 
     @Query("select vendor from Vendor vendor"
-            + " inner join vendor.vendorMappings vm on vm.agreement.id = vendor.id"
-            + " inner join vm.vendor vendor on vm.vendor.vendorId = vendor.vendorId"
-            + " where UPPER(vendor.name) LIKE UPPER(concat('%', concat(?1, '%')))"
-            + " OR UPPER(vendor.location) LIKE UPPER(concat('%', concat(?1, '%'))) OR UPPER(vendor.description) LIKE UPPER(concat('%', concat(?1, '%')))"
-            + "OR UPPER(vendor.status) LIKE UPPER(concat('%', concat(?1, '%')))"
+            + " inner join AgreementVendorMapping  vm on vm.vendor.vendorId = vendor.vendorId"
+            + " inner join Agreement agreement on vm.agreement.id = agreement.id"
+            + " where UPPER(vendor.vendorName) LIKE UPPER(concat('%', concat(?1, '%')))"
+            + " OR UPPER(vendor.address) LIKE UPPER(concat('%', concat(?1, '%'))) OR UPPER(vendor.phone) LIKE UPPER(concat('%', concat(?1, '%')))"
+            + "OR UPPER(vendor.aadhar) LIKE UPPER(concat('%', concat(?1, '%')))"
             + "OR UPPER(vendor.email) LIKE UPPER(concat('%', concat(?1, '%')))"
-            + "OR UPPER(vendor.vendorName) LIKE UPPER(concat('%', concat(?1, '%')))")
+            + "OR UPPER(agreement.location) LIKE UPPER(concat('%', concat(?1, '%')))"
+            + "OR UPPER(agreement.description) LIKE UPPER(concat('%', concat(?1, '%')))"
+            + "OR UPPER(agreement.name) LIKE UPPER(concat('%', concat(?1, '%')))")
     Page<Vendor> search(String keyword, Pageable pageable);
 }
