@@ -52,13 +52,13 @@ public class Agreement {
     /**
      * The Loa date.
      */
-    @Column(name = "loa_date", nullable = false)
+    @Column(name = "loa_date")
     private LocalDateTime loaDate;
 
     /**
      * The Ca value.
      */
-    @Column(name = "ca_value", nullable = false)
+    @Column(name = "ca_value")
     private BigDecimal caValue;
 
     /**
@@ -70,7 +70,7 @@ public class Agreement {
     /**
      * The Status.
      */
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private String status;
 
     /**

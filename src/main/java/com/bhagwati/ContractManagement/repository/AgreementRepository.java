@@ -24,7 +24,7 @@ public interface AgreementRepository extends JpaRepository<Agreement, String>, J
      * @param pageable the pageable
      * @return the page
      */
-    @Query("select agreement from Agreement agreement"
+    @Query("select distinct agreement from Agreement agreement"
             + " inner join agreement.vendorMappings vm on vm.agreement.id = agreement.id"
             + " inner join vm.vendor vendor on vm.vendor.vendorId = vendor.vendorId"
             + " where UPPER(agreement.name) LIKE UPPER(concat('%', concat(?1, '%')))"

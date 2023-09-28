@@ -127,13 +127,13 @@ public class TransactionService {
         List<TransactionDto> transactionDtos = transactionMapper.convertEntityListToDtoList(transactions);
         Map<String, List<TransactionDto>> transactionTypeMap = transactionDtos.stream().collect(Collectors.groupingBy(TransactionDto::getType));
         transactionTypeMap.forEach((s, transactionDtos1) -> {
-            if (s.equalsIgnoreCase("CREDIT")) {
+            if (s.equalsIgnoreCase("CR")) {
                 transactionResponse.put("totalReceivedAmount", transactionDtos1.stream().mapToInt(TransactionDto::getAmount).sum());
             } else {
                 transactionResponse.put("totalSpendAmount", transactionDtos1.stream().mapToInt(TransactionDto::getAmount).sum());
             }
         });
-        transactionResponse.put("data", transactionResponse);
+        transactionResponse.put("data", transactionDtos);
         return transactionResponse;
     }
 
