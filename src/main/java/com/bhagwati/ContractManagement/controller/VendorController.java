@@ -31,7 +31,7 @@ public class VendorController {
      */
     @GetMapping
     public ResponseDto getVendors() {
-        return ResponseDto.builder().statusCode(200).data(vendorsService.getVendorDetails()).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).data(vendorsService.getVendorDetails()).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -42,7 +42,7 @@ public class VendorController {
      */
     @GetMapping(APIConstant.ID)
     public ResponseDto getVendorsById(@PathVariable String id) {
-        return ResponseDto.builder().statusCode(200).data(vendorsService.getVendorById(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).data(vendorsService.getVendorById(id)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -52,7 +52,7 @@ public class VendorController {
      */
     @GetMapping(APIConstant.SEARCH)
     public ResponseDto searchVendors(PageableRequestDto pageableRequestDto) {
-        return ResponseDto.builder().statusCode(200).data(vendorsService.searchVendors(pageableRequestDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).data(vendorsService.searchVendors(pageableRequestDto)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -63,7 +63,7 @@ public class VendorController {
      */
     @PostMapping
     public ResponseDto saveVendors(@RequestBody VendorDto vendorDto) {
-        return ResponseDto.builder().statusCode(200).data(vendorsService.saveVendor(vendorDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).data(vendorsService.saveVendor(vendorDto)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -74,7 +74,7 @@ public class VendorController {
      */
     @PutMapping
     public ResponseDto updateVendors(@RequestBody VendorDto vendorDto) {
-        return ResponseDto.builder().statusCode(200).data(vendorsService.updateVendor(vendorDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).data(vendorsService.updateVendor(vendorDto)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -85,7 +85,7 @@ public class VendorController {
      */
     @DeleteMapping(APIConstant.ID)
     public ResponseDto deleteVendor(@PathVariable String id) {
-        return ResponseDto.builder().statusCode(200).data(vendorsService.deleteVendor(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).data(vendorsService.deleteVendor(id)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 }
 

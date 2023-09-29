@@ -32,7 +32,7 @@ public class AgreementController {
      */
     @GetMapping
     public ResponseDto getAgreements() {
-        return ResponseDto.builder().statusCode(200).data(agreementService.getAgreementDetails()).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).success(true).data(agreementService.getAgreementDetails()).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -43,7 +43,7 @@ public class AgreementController {
      */
     @GetMapping(APIConstant.ID)
     public ResponseDto getAgreement(@PathVariable String id) {
-        return ResponseDto.builder().statusCode(200).data(agreementService.getAgreementDetailsById(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).success(true).data(agreementService.getAgreementDetailsById(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -54,12 +54,12 @@ public class AgreementController {
      */
     @GetMapping(APIConstant.SEARCH)
     public ResponseDto searchAgreement(PageableRequestDto pageableRequestDto) {
-        return ResponseDto.builder().statusCode(200).data(agreementService.searchAgreementDetails(pageableRequestDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).success(true).data(agreementService.searchAgreementDetails(pageableRequestDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     @PostMapping(APIConstant.SEARCH+"/filter")
     public ResponseDto searchAgreement(@RequestBody SearchFilterPageRequest pageableRequestDto) {
-        return ResponseDto.builder().statusCode(200).data(agreementService.searchAgreementDetails(pageableRequestDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).success(true).data(agreementService.searchAgreementDetails(pageableRequestDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -70,7 +70,7 @@ public class AgreementController {
      */
     @PostMapping
     public ResponseDto saveAgreement(@RequestBody AgreementDto agreementDto) {
-        return ResponseDto.builder().statusCode(200).data(agreementService.saveAgreementDetails(agreementDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).success(true).data(agreementService.saveAgreementDetails(agreementDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -81,7 +81,7 @@ public class AgreementController {
      */
     @PutMapping
     public ResponseDto updateAgreement(@RequestBody AgreementDto agreementDto) {
-        return ResponseDto.builder().data(agreementService.updateAgreementDetails(agreementDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().data(agreementService.updateAgreementDetails(agreementDto)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -92,7 +92,7 @@ public class AgreementController {
      */
     @DeleteMapping(APIConstant.ID)
     public ResponseDto deleteAgreement(@PathVariable String id) {
-        return ResponseDto.builder().data(agreementService.deleteAgreementDetails(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().data(agreementService.deleteAgreementDetails(id)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -103,7 +103,7 @@ public class AgreementController {
      */
     @GetMapping(APIConstant.VENDOR_AGREEMENT_ID)
     public ResponseDto getVendorsByAgreementId(@PathVariable String agreementId) {
-        return ResponseDto.builder().statusCode(200).data(agreementService.getVendorsByAgreementId(agreementId)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().statusCode(200).data(agreementService.getVendorsByAgreementId(agreementId)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 }
 

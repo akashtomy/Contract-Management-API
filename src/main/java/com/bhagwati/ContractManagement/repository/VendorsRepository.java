@@ -18,7 +18,7 @@ import java.util.List;
 public interface VendorsRepository extends JpaRepository<Vendor, String>, JpaSpecificationExecutor<Vendor> {
     List<Vendor> findByVendorIdIn(List<String> vendorIds);
 
-    @Query("select vendor from Vendor vendor"
+    @Query("select distinct vendor from Vendor vendor"
             + " inner join AgreementVendorMapping  vm on vm.vendor.vendorId = vendor.vendorId"
             + " inner join Agreement agreement on vm.agreement.id = agreement.id"
             + " where UPPER(vendor.vendorName) LIKE UPPER(concat('%', concat(?1, '%')))"

@@ -8,6 +8,7 @@ import com.bhagwati.ContractManagement.mapper.VendorMapper;
 import com.bhagwati.ContractManagement.repository.VendorsRepository;
 import com.bhagwati.ContractManagement.utils.CommonUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -103,7 +104,12 @@ public class VendorsService {
                 Sort.by(commonUtils.getPaginationOrders(pageableRequestDto.getSortBy())));
         PageableResponse<VendorDto> pageableResponse = new PageableResponse<>();
 //        genericSpecification = new GenericSpecification<>(pageableRequestDto.getFilter()).build(pageableRequestDto.getSearchKey());
-        Page<Vendor> vendorPages = vendorsRepository.findAll(pageable);
+        Page<Vendor> vendorPages;
+        if (StringUtils.isEmpty(pageableRequestDto.getSearchKey())) {
+            vendorPages = vendorsRepository.findAll(pageable);
+        } else {
+            vendorPages = vendorsRepository.search(pageableRequestDto.getSearchKey(), pageable);
+        }
         List<VendorDto> vendorDtos = vendorMapper.convertEntityListToDtoList(vendorPages.getContent());
         return pageableResponse.convert(new PageImpl<>(vendorDtos, pageable, vendorPages.getTotalElements()));
     }

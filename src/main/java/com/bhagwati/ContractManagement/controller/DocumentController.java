@@ -34,7 +34,7 @@ public class DocumentController {
      */
     @GetMapping(APIConstant.ID)
     public ResponseDto getDocumentById(@PathVariable String id) {
-        return ResponseDto.builder().data(documentService.getDocumentById(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().data(documentService.getDocumentById(id)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -45,7 +45,7 @@ public class DocumentController {
      */
     @GetMapping("/vendor/{id}")
     public ResponseDto getDocumentsByVendorId(@PathVariable String id) {
-        return ResponseDto.builder().data(documentService.getDocumentsByVendorId(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().data(documentService.getDocumentsByVendorId(id)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -56,7 +56,7 @@ public class DocumentController {
      */
     @GetMapping("/agreement/{id}")
     public ResponseDto getDocumentsByAgreementId(@PathVariable String id) {
-        return ResponseDto.builder().data(documentService.getDocumentsByAgreementId(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().data(documentService.getDocumentsByAgreementId(id)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
 
@@ -69,7 +69,7 @@ public class DocumentController {
      */
     @DeleteMapping(APIConstant.ID)
     public ResponseDto deleteAgreement(@PathVariable String id) throws IOException {
-        return ResponseDto.builder().data(documentService.deleteDocument(id)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().data(documentService.deleteDocument(id)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
     /**
@@ -81,7 +81,7 @@ public class DocumentController {
      */
     @PostMapping
     public ResponseDto saveDocuments(DocumentDto documentDto) throws IOException {
-        return ResponseDto.builder().data(documentService.saveDocuments(documentDto)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
+        return ResponseDto.builder().data(documentService.saveDocuments(documentDto)).success(true).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 }
 

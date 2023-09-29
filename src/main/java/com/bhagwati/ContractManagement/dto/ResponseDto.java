@@ -11,7 +11,6 @@ import java.io.Serializable;
  * The type Response dto.
  *
  * @author Akash Thomas
- * @author Dipak Desai
  */
 @Data
 @Builder

@@ -46,11 +46,23 @@ public class TransactionController {
     }
 
 
+    /**
+     * Gets transaction by agreement id.
+     *
+     * @param agreementId the agreement id
+     * @return the transaction by agreement id
+     */
     @GetMapping(APIConstant.AGREEMENT_AGREEMENT_ID)
     public ResponseDto getTransactionByAgreementId(@PathVariable String agreementId) {
         return ResponseDto.builder().success(true).statusCode(200).data(transactionService.getTransactionByAgreementId(agreementId)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();
     }
 
+    /**
+     * Gets transaction by vendor id.
+     *
+     * @param vendorId the vendor id
+     * @return the transaction by vendor id
+     */
     @GetMapping(APIConstant.VENDOR_VENDOR_ID)
     public ResponseDto getTransactionByVendorId(@PathVariable String vendorId) {
         return ResponseDto.builder().success(true).statusCode(200).data(transactionService.getTransactionByVendorId(vendorId)).error(null).message(MessageConstant.REQUEST_FULFILLED_SUCCESSFULLY).build();

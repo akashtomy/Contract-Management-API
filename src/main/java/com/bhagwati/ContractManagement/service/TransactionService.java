@@ -3,6 +3,7 @@ package com.bhagwati.ContractManagement.service;
 import com.bhagwati.ContractManagement.dto.PageableRequestDto;
 import com.bhagwati.ContractManagement.dto.PageableResponse;
 import com.bhagwati.ContractManagement.dto.TransactionDto;
+import com.bhagwati.ContractManagement.dto.TransactionResponseDto;
 import com.bhagwati.ContractManagement.entity.Transactions;
 import com.bhagwati.ContractManagement.mapper.TransactionMapper;
 import com.bhagwati.ContractManagement.repository.TransactionsRepository;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -122,19 +123,19 @@ public class TransactionService {
      * @return the transaction by agreement id
      */
     public Object getTransactionByAgreementId(String agreementId) {
-        Map<String, Object> transactionResponse = new HashMap<>();
+        TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
         List<Transactions> transactions = transactionsRepository.findByAgreementId(agreementId);
         List<TransactionDto> transactionDtos = transactionMapper.convertEntityListToDtoList(transactions);
         Map<String, List<TransactionDto>> transactionTypeMap = transactionDtos.stream().collect(Collectors.groupingBy(TransactionDto::getType));
         transactionTypeMap.forEach((s, transactionDtos1) -> {
             if (s.equalsIgnoreCase("CR")) {
-                transactionResponse.put("totalReceivedAmount", transactionDtos1.stream().mapToInt(TransactionDto::getAmount).sum());
+                transactionResponseDto.setTotalReceivedAmount(BigDecimal.valueOf(transactionDtos1.stream().mapToInt(TransactionDto::getAmount).sum()));
             } else {
-                transactionResponse.put("totalSpendAmount", transactionDtos1.stream().mapToInt(TransactionDto::getAmount).sum());
+                transactionResponseDto.setTotalSpendAmount(BigDecimal.valueOf(transactionDtos1.stream().mapToInt(TransactionDto::getAmount).sum()));
             }
         });
-        transactionResponse.put("data", transactionDtos);
-        return transactionResponse;
+        transactionResponseDto.setTransactions(transactionDtos);
+        return transactionResponseDto;
     }
 
     /**
@@ -144,7 +145,18 @@ public class TransactionService {
      * @return the transaction by vendor id
      */
     public Object getTransactionByVendorId(String vendorId) {
+        TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
         List<Transactions> transactions = transactionsRepository.findByAgreementId(vendorId);
-        return transactionMapper.convertEntityListToDtoList(transactions);
+        List<TransactionDto> transactionDtos = transactionMapper.convertEntityListToDtoList(transactions);
+        Map<String, List<TransactionDto>> transactionTypeMap = transactionDtos.stream().collect(Collectors.groupingBy(TransactionDto::getType));
+        transactionTypeMap.forEach((s, transactionDtos1) -> {
+            if (s.equalsIgnoreCase("CR")) {
+                transactionResponseDto.setTotalReceivedAmount(BigDecimal.valueOf(transactionDtos1.stream().mapToInt(TransactionDto::getAmount).sum()));
+            } else {
+                transactionResponseDto.setTotalSpendAmount(BigDecimal.valueOf(transactionDtos1.stream().mapToInt(TransactionDto::getAmount).sum()));
+            }
+        });
+        transactionResponseDto.setTransactions(transactionDtos);
+        return transactionResponseDto;
     }
 }
