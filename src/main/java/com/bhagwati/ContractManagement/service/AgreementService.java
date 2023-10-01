@@ -121,10 +121,10 @@ public class AgreementService {
     public AgreementDto updateAgreementDetails(AgreementDto agreementDto) {
         List<String> vendorIds = agreementDto.getVendors().stream().map(vendorDto -> vendorDto.getVendorId()).collect(Collectors.toList());
         Agreement agreementOptional = agreementRepository.findById(agreementDto.getId()).orElseThrow(() -> new CustomExceptions("Data not found", 400, HttpStatus.BAD_REQUEST.toString()));
-        List<AgreementVendorMapping> vendorMappings = agreementOptional.getVendorMappings().stream().filter(avm -> vendorIds.contains(avm.getVendor().getVendorId())).collect(Collectors.toList());
+//        List<AgreementVendorMapping> vendorMappings = agreementOptional.getVendorMappings().stream().filter(avm -> vendorIds.contains(avm.getVendor().getVendorId())).collect(Collectors.toList());
         Agreement agreement = agreementMapper.convertDtoToEntity(agreementDto);
         List<Vendor> vendors = vendorsRepository.findByVendorIdIn(vendorIds);
-        List<AgreementVendorMapping> agreementVendorMappings = vendorMappings;
+        List<AgreementVendorMapping> agreementVendorMappings = agreementOptional.getVendorMappings();
         // add the agreement vendor mapping based on the request
         for (Vendor vendor : vendors) {
             if (!agreementVendorMappings.stream().anyMatch(avm -> avm.getVendor().getVendorId().equalsIgnoreCase(vendor.getVendorId()))) {
