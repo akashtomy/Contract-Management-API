@@ -125,6 +125,7 @@ public class AgreementService {
         Agreement agreement = agreementMapper.convertDtoToEntity(agreementDto);
         List<Vendor> vendors = vendorsRepository.findByVendorIdIn(vendorIds);
         List<AgreementVendorMapping> agreementVendorMappings = vendorMappings;
+        // add the agreement vendor mapping based on the request
         for (Vendor vendor : vendors) {
             if (!agreementVendorMappings.stream().anyMatch(avm -> avm.getVendor().getVendorId().equalsIgnoreCase(vendor.getVendorId()))) {
                 AgreementVendorMapping agreementVendorMapping = new AgreementVendorMapping();
@@ -133,6 +134,8 @@ public class AgreementService {
                 agreementVendorMappings.add(agreementVendorMapping);
             }
         }
+        // Delete the agreement vendor mapping based on request
+        agreementVendorMappings.removeIf(avm -> !vendorIds.contains(avm.getVendor().getVendorId()));
         agreement.setVendorMappings(agreementVendorMappings);
         Agreement savedAgreement = agreementRepository.save(agreement);
         return agreementMapper.convertEntityToDto(savedAgreement);
