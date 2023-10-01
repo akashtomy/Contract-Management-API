@@ -146,7 +146,7 @@ public class TransactionService {
      */
     public Object getTransactionByVendorId(String vendorId) {
         TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
-        List<Transactions> transactions = transactionsRepository.findByAgreementId(vendorId);
+        List<Transactions> transactions = transactionsRepository.findByVendorId(vendorId);
         List<TransactionDto> transactionDtos = transactionMapper.convertEntityListToDtoList(transactions);
         Map<String, List<TransactionDto>> transactionTypeMap = transactionDtos.stream().collect(Collectors.groupingBy(TransactionDto::getType));
         transactionTypeMap.forEach((s, transactionDtos1) -> {
