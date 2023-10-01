@@ -7,6 +7,7 @@ import com.bhagwati.ContractManagement.entity.Vendor;
 import com.bhagwati.ContractManagement.exception.CustomExceptions;
 import com.bhagwati.ContractManagement.mapper.AgreementMapper;
 import com.bhagwati.ContractManagement.repository.AgreementRepository;
+import com.bhagwati.ContractManagement.repository.AgreementVendorMappingRepository;
 import com.bhagwati.ContractManagement.repository.VendorsRepository;
 import com.bhagwati.ContractManagement.utils.CommonUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -53,6 +54,8 @@ public class AgreementService {
      */
     @Autowired
     private VendorsRepository vendorsRepository;
+    @Autowired
+    private AgreementVendorMappingRepository agreementVendorMappingRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -118,6 +121,7 @@ public class AgreementService {
      * @param agreementDto the agreement dto
      * @return the agreement dto
      */
+    @Transactional
     public AgreementDto updateAgreementDetails(AgreementDto agreementDto) {
         List<String> vendorIds = agreementDto.getVendors().stream().map(vendorDto -> vendorDto.getVendorId()).collect(Collectors.toList());
         Agreement agreementOptional = agreementRepository.findById(agreementDto.getId()).orElseThrow(() -> new CustomExceptions("Data not found", 400, HttpStatus.BAD_REQUEST.toString()));
@@ -135,6 +139,8 @@ public class AgreementService {
             }
         }
         // Delete the agreement vendor mapping based on request
+        List<String> agreementMappingToBeRemoved = agreementVendorMappings.stream().filter(avm -> !vendorIds.contains(avm.getVendor().getVendorId())).map(avm -> avm.getId()).collect(Collectors.toList());
+        agreementVendorMappingRepository.deleteAllById(agreementMappingToBeRemoved);
         agreementVendorMappings.removeIf(avm -> !vendorIds.contains(avm.getVendor().getVendorId()));
         agreement.setVendorMappings(agreementVendorMappings);
         Agreement savedAgreement = agreementRepository.save(agreement);
