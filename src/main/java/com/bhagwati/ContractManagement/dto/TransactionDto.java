@@ -39,6 +39,11 @@ public class TransactionDto extends AuditableDto implements Serializable {
      * The Gross amount.
      */
     private Integer grossAmount;
+
+    /**
+     * The Comments.
+     */
+    private String comments;
     /**
      * The Net amount.
      */

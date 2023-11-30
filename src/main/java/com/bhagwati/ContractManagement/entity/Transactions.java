@@ -91,11 +91,20 @@ public class Transactions  {
     private Integer grossAmount;
 
     /**
+     * The Description.
+     */
+    @Column(name = "comments")
+    private String comments;
+
+    /**
      * The Net amount.
      */
     @Column(name = "net_amount")
     private Integer netAmount;
 
+    /**
+     * The Created by.
+     */
     @Column(name = "created_by")
     private String createdBy;
     /**

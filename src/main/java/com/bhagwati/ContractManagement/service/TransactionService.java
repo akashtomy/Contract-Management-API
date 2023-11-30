@@ -134,7 +134,13 @@ public class TransactionService {
                 transactionResponseDto.setTotalSpendAmount(BigDecimal.valueOf(transactionDtos1.stream().mapToInt(TransactionDto::getAmount).sum()));
             }
         });
-        transactionResponseDto.setTransactions(transactionDtos);
+        transactionDtos.forEach(transactionDto -> {
+         if(transactionDto.getAgreementVendorId()!=null)
+             transactionResponseDto.getTransactions().add(transactionDto);
+         else
+             transactionResponseDto.getAgreementTransactions().add(transactionDto);
+        });
+//        transactionResponseDto.setTransactions(transactionDtos);
         return transactionResponseDto;
     }
 

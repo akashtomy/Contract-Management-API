@@ -16,5 +16,6 @@ public class TransactionResponseDto extends AuditableDto implements Serializable
     private BigDecimal totalReceivedAmount = BigDecimal.ZERO;
     private BigDecimal totalSpendAmount = BigDecimal.ZERO;
     private List<TransactionDto> transactions;
+    private List<TransactionDto> agreementTransactions;
 
 }
