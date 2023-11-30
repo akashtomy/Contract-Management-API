@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,7 +16,7 @@ import java.util.List;
 public class TransactionResponseDto extends AuditableDto implements Serializable {
     private BigDecimal totalReceivedAmount = BigDecimal.ZERO;
     private BigDecimal totalSpendAmount = BigDecimal.ZERO;
-    private List<TransactionDto> transactions;
-    private List<TransactionDto> agreementTransactions;
+    private List<TransactionDto> transactions = new ArrayList<>();
+    private List<TransactionDto> agreementTransactions = new ArrayList<>();
 
 }
